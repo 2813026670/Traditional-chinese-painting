@@ -2,14 +2,11 @@
 import { ref } from 'vue'
 import axios from 'axios';
 import MyInput from './components/MyInput.vue';
-import ColorPalette from './components/ColorPalette.vue';
+
 export default {
   components: {
-    MyInput,
-
+    MyInput
   },
-
-
   data() {
     return {
       msg: "TcpColor",
@@ -22,7 +19,6 @@ export default {
       middleTopbox: "middle-top",
       middleBottombox: "middle-bottom",
       rightbox: "right",
-
       inputValue: '',
       selected1: [],
       options1: [
@@ -108,11 +104,9 @@ export default {
       colorNames: [],
       colorNames2: [],
       colorRGBs: [],
-      colorRGBs2: null,
       imageBase64s: [],
       palettearray: [],
       testcolorRGB: [],
-      testcolorNAMES : [],
       currentPaletteIndex: null,
 
       selectColorNumberArray: '',
@@ -122,9 +116,6 @@ export default {
       ],
       SelectedColorNumber: '',
       OneOrFiveColored: '',
-
-      listData: ["原图配色方案", "推荐配色方案"],
-      activeIndex: null,
     }
   },
 
@@ -175,20 +166,9 @@ export default {
       this.feedback5.splice(index, 1);
     },
 
-    hasFeedback() {
-      return (
-        this.feedback1.length > 0 ||
-        this.feedback2.length > 0 ||
-        this.feedback3.length > 0 ||
-        this.feedback4.length > 0 ||
-        this.feedback5.length > 0 ||
-        this.inputValue > 0
-      );
-    },
-
     generateImages() {
 
-      this.prompts = [this.feedback1, this.feedback2, this.feedback3, this.feedback4, this.feedback5, '色系', this.inputValue];
+      this.prompts = [this.feedback1, this.feedback2, this.feedback3, this.feedback4, this.feedback5, '色系',this.inputValue];
     },
     testTiaoseFunction() {
       this.tiaoseimages = this.tiaoseimages2;
@@ -244,33 +224,24 @@ export default {
 
     showPaletteNames(index) {
       this.currentPaletteIndex = index;
-    },//显示颜色方案名字
+    },
     hidePaletteNames() {
       this.currentPaletteIndex = null;
-    },//隐藏颜色方案名字
+    },
 
     selectColorNumber() {
       this.SelectedColorNumber = this.selectColorNumberArray;
     },
 
     extractColor(paletteIndex) {
-      // 清空 testcolorRGB 和 testcolorNAMES 数组  
+      // 清空 testcolorRGB 数组，以便存储当前按钮的所有颜色  
       this.testcolorRGB = [];
-      this.testcolorNAMES = []; // 清空名字数组以便存储当前方案的所有颜色名  
-
-      // 获取当前方案的所有颜色值和对应的名字  
-      const colors = this.colorRGBs[paletteIndex];
-      const colorNames = this.colorNames2[paletteIndex];
-
-      // 遍历颜色值，并转换为十六进制字符串，同时存储对应的名字  
-      colors.forEach((color, index) => {
-        const hexColor = '#' + color.toString(16).padStart(6, '0');
-        this.testcolorRGB.push(hexColor);
-        this.testcolorNAMES.push(colorNames[index]); // 存储对应的颜色名  
+      // 获取当前按钮下的所有颜色值  
+      const colors = this.colorRGBs[paletteIndex].map(color => {
+        return '#' + color.toString(16).padStart(6, '0');
       });
-
-      // 更新当前选择的方案索引  
-      this.currentPaletteIndex = paletteIndex;
+      // 将所有颜色添加到 testcolorRGB 数组中  
+      this.testcolorRGB.push(...colors);
       // 可以在这里添加其他逻辑，比如显示一个消息或执行其他操作  
     },
 
@@ -282,74 +253,6 @@ export default {
     updateColorNames() {
       this.SelectedColorNumber = 9;
     },
-    changeColor(index) {
-      this.activeIndex = index;
-      if (index === 0) {
-        this.updateColorNames();
-      } else if (index === 1) {
-        this.colorNames2 = this.sortByContrast(this.colorNames);
-      }
-    },
-
-    //重新排序
-    meanColor(row) {
-      // 将行转换为 RGB 值数组
-      const rgbValues = row.map(color =>
-        [parseInt(color.substring(0, 2), 16),
-        parseInt(color.substring(2, 4), 16),
-        parseInt(color.substring(4, 6), 16)]
-      );
-
-      // 计算平均 RGB 值
-      const meanRGB = rgbValues.reduce((acc, val) =>
-        acc.map((sum, i) => sum + val[i]),
-        [0, 0, 0]
-      ).map(value => Math.floor(value / rgbValues.length));
-
-      // 转换回十六进制字符串
-      return '#' + meanRGB.map(val => val.toString(16).padStart(2, '0')).join('');
-    },
-    darkestColor(array) {
-      let darkestHex = '#ffffff';
-      let darkestValue = Infinity;
-
-      for (let row of array) {
-        for (let color of row) {
-          let rgbSum = parseInt(color.substring(0, 2), 16) +
-            parseInt(color.substring(2, 4), 16) +
-            parseInt(color.substring(4, 6), 16);
-
-          if (rgbSum < darkestValue) {
-            darkestValue = rgbSum;
-            darkestHex = color;
-          }
-        }
-      }
-
-      return darkestHex;
-    },
-    euclideanDistance(color1, color2) {
-      const rmean = (parseInt(color1.substring(1, 3), 16) + parseInt(color2.substring(1, 3), 16)) / 2;
-      const r = parseInt(color1.substring(1, 3), 16) - parseInt(color2.substring(1, 3), 16);
-      const g = parseInt(color1.substring(3, 5), 16) - parseInt(color2.substring(3, 5), 16);
-      const b = parseInt(color1.substring(5, 7), 16) - parseInt(color2.substring(5, 7), 16);
-
-      // 使用感知加权欧几里得距离公式
-      return Math.sqrt((2 + rmean * 0.0039) * (r ** 2) + 4 * (g ** 2) + (2 + (255 - rmean) * 0.0075) * (b ** 2));
-    },
-    sortByContrast(array) {
-      const darkest = this.darkestColor(array);
-      const distances = array.map(row => ({
-        row,
-        distance: this.euclideanDistance(this.meanColor(row), darkest)
-      }));
-
-      return distances.sort((a, b) => b.distance - a.distance).map(item => item.row);
-    },
-    sortColors() {
-      this.colorRGBs2 = this.sortByContrast(this.colorNames);
-    }
-
   },
   watch: {
     SelectedColorNumber: function (val) {
@@ -357,24 +260,6 @@ export default {
       this.colorNames2 = this.colorNames.slice(0, this.SelectedColorNumber);
     }
   },
-
-  computed: {
-    TextFeedback1() {//选择框1的文本反馈信息
-      return this.feedback1.length > 0 ? this.TextFeedback1 = this.feedback1.join('、') : '';
-    },
-    TextFeedback2() {
-      return this.feedback2.length > 0 ? this.TextFeedback2 = this.feedback2.join('、') : '';
-    },
-    TextFeedback3() {
-      return this.feedback3.length > 0 ? this.TextFeedback3 = this.feedback3.join('、') : '';
-    },
-    TextFeedback4() {
-      return this.feedback4.length > 0 ? this.TextFeedback4 = this.feedback4.join('、') : '';
-    },
-    TextFeedback5() {
-      return this.feedback5.length > 0 ? this.TextFeedback5 = this.feedback5.join('、') : '';
-    },
-  }
 
 }
 </script>
@@ -390,10 +275,9 @@ export default {
           <span style="color:#675229;font-size: 34px;">🅐</span>
           <span v-bind:id="texttitle" style="color:#95815c;font-size: 18px;">控制面板</span>
         </div>
-        <!--
-
-        反馈框
+        <!--反馈框
         <div class="feedback">
+          
           <div class="feedback1" v-if="feedback1.length > 0">
             <div class="feedback-option1" v-for="(item, index) in feedback1" :key="index">
               {{ item }}
@@ -430,10 +314,11 @@ export default {
             </div>
           </div>
         </div>
-        -->
+      -->
         <div>
           <!-- 使用组件 -->
-          <my-input v-model="inputValue" id="my-input" type="text" label="" placeholder="输入"></my-input>
+          <my-input v-model="inputValue" id="my-input" type="text" label=""
+            placeholder="输入"></my-input>
         </div>
 
         <!--选择框-->
@@ -510,23 +395,16 @@ export default {
           </div>
         </div>
 
-        <div class="ColorFeedback-text" v-if="hasFeedback()">
-          <p>此图为传统中国画
-            <span v-if="this.TextFeedback1">,类型为{{ TextFeedback1 }}</span>
-            <span v-if="this.TextFeedback2">,意境为{{ TextFeedback2 }}</span>
-            <span v-if="this.TextFeedback3">,物象为{{ TextFeedback3 }}</span>
-            <span v-if="this.TextFeedback4">,技法为{{ TextFeedback4 }}</span>
-            <span v-if="this.TextFeedback5">,赋彩为{{ TextFeedback5 }}</span>
+        <div class="ColorFeedback-text">
+          <p>此图为传统中国画, 类型为{{ feedback1 }},意境为{{ feedback2 }},物象为{{ feedback3 }},技法为{{ feedback4 }},赋彩为{{ feedback5 }}
           </p>
-          <p v-if="this.inputValue.length > 0">
-            用户输入:{{ this.inputValue }}
+          <p>
+            用户输入:{{this.inputValue}}
           </p>
         </div>
-        <br>
+
         <div class="produce-picture">
-          <button @click="imageButtomFunction()"
-            style="width: 150px; font-size: 15px ;height: 30px;color: rgb(161, 155, 139);  background-color: rgb(217, 217, 217);border: hidden;cursor: pointer;">
-            生成配色方案</button>
+          <button @click="imageButtomFunction()" style="width: 150px;height: 30px;">生成图片</button>
         </div>
       </div>
 
@@ -548,37 +426,29 @@ export default {
         <div v-bind:class="middleBottombox">
           <div style="display:flex; align-items:center;">
             <span style="color:#675229;font-size: 34px;">🅒</span>
-            <span v-bind:id="texttitle" style="color:#95815c;font-size: 18px;">推荐配色方案</span>
+            <span v-bind:id="texttitle" style="color:#95815c;font-size: 18px;">推荐调色板</span>
           </div>
           <div class="test-tiaose">
             <div class="colorNumberBox">
               <span
-                style="font-size: 15px; width: 80px; margin-top:4px; margin-right: 2%; margin-left: 5px;">颜色数量：</span>
-
-              <el-select v-model="selectColorNumberArray" placeholder="请选择" fallback-placements="top-start"
+                style="font-size: 15px; width: 80px; margin-top:4px; margin-right: 2%; margin-left: 5px;">颜色数量:</span>
+              <el-select v-model="selectColorNumberArray" placeholder="数量" fallback-placements="top-start"
                 @change="selectColorNumber(value)"
-                style="  align-content: center; width: 80px; height: 20px;margin-right: 6%; ">
+                style="  align-content: center; width: 80px; height: 20px;margin-right: 6%;">
                 <el-option v-for="item in colorNumber" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
-              <!--<button  @click="updateColorNames" style="height: 30px; margin-top:2px;margin-right: 6%;">
+              <button @click="updateColorNames" style="height: 30px; margin-top:2px;margin-right: 6%;">
                 原图配色方案
               </button>
-              <button  @click="" style="height: 30px; margin-top:2px;">
+              <button @click="" style="height: 30px; margin-top:2px;">
                 推荐配色方案
-              </button>-->
-
-              <button class="chcolor" v-for="(item, index) in listData" :key="index" @click="changeColor(index)"
-                :class="activeIndex === index ? 'active' : ''">
-                {{ item }}
               </button>
-
             </div>
             <div style="display: flex;  flex-direction: row; flex:10;">
               <div class="ChooseColorScheme">
                 <div v-for="(palette, index) in colorNames2" :key="index" class="palette-button"
                   @mouseover="showPaletteNames(index)" @mouseout="hidePaletteNames" @click="extractColor(index)">
-                  <!-- 遍历colorNames2数组中的每一个颜色方案（palette），为每一个方案创建一个按钮-->
                   <div class="color-blocks-container">
                     <div v-for="(color, colorIndex) in palette" :key="colorIndex"
                       :style="{ backgroundColor: '#' + colorRGBs[index][colorIndex].toString(16).padStart(6, '0') }"
@@ -590,34 +460,22 @@ export default {
                 </div>
               </div>
               <div class="TestButton">
-                <button @click="testTiaoseFunction"
-                  style="width: 150px; font-size: 15px ;height: 30px; color: rgb(161, 155, 139); background-color: rgb(217, 217, 217);border: hidden;cursor: pointer;">测试配色方案</button>
-                <!--选择的颜色方案-->
-                <div class="color-scheme-display" style="margin: auto;">
-                  <div v-for="(color, index) in testcolorRGB" :key="index" class="color-entry1">
-                    <div class="color-preview1" :style="{ backgroundColor: color }"></div>
-                    <span class="color-name1">{{ this.testcolorNAMES[index] }}</span>
-                  </div>
-                </div>
+                <button @click="testTiaoseFunction">测试调色板</button>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div v-bind:class="rightbox">
-        <div style="display:flex; align-items:center;">
-          <span style="color:#675229;font-size: 34px;">🅓</span>
-          <span v-bind:id="texttitle" style="color:#95815c;font-size: 18px;">测试配色方案</span>
-        </div>
+        <span>🅓测试调色板</span>
         <div>
           <div>上传文件</div>
           <div>{{ this.testcolorRGB }}</div>
           <div>{{ this.SelectedColorNumber }}</div>
           <div>{{ this.prompts }}</div>
           <div>{{ this.colorNames2 }}</div>
-          <div>{{ this.colorRGBs }}</div>
           <div>{{ this.OneOrFiveColored }}</div>
-          <div>{{ this.colorRGBs2 }}</div>
+          <div>{{ this.inputValue }}</div>
           <div class="testbox">
             <div class="testpicture" v-for="(image, index) in tiaoseimages" :key="index">
               <div class="tset"><img :src="image" :alt="'image ' + (index + 1)"></div>
@@ -671,7 +529,7 @@ export default {
 
 .left {
   flex: 2;
-  background-color: rgb(231, 227, 216);
+  background-color: rgb(234, 227, 216);
 
   margin-top: 4px;
   margin-right: 2px;
@@ -679,7 +537,7 @@ export default {
 
 .right {
   flex: 2;
-  background-color: rgb(231, 227, 216);
+  background-color: rgb(234, 227, 216);
 
   margin-top: 4px;
   margin-left: 2px;
@@ -693,7 +551,7 @@ export default {
 
 .middle-top {
   flex: 1;
-  background-color: rgb(231, 227, 216);
+  background-color: rgb(234, 227, 216);
   display: flex;
   flex-direction: column;
   margin-top: 4px;
@@ -703,7 +561,7 @@ export default {
 
 .middle-bottom {
   flex: 1;
-  background-color: rgb(231, 227, 216);
+  background-color: rgb(234, 227, 216);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -732,7 +590,7 @@ export default {
 
 /* 更改选择框（输入框）的背景色 */
 .el-select__wrapper.el-tooltip__trigger {
-  background-color: #95815c;
+  background-color: #95815c !important;
   /* 设置输入框背景色 */
   color: white;
   height: 40px;
@@ -934,6 +792,7 @@ export default {
   /*垂直居中 */
   justify-content: center;
   /*水平居中 */
+
 }
 
 .grid-item {
@@ -1037,61 +896,5 @@ export default {
   padding: 5px;
   display: flex;
   justify-content: center;
-}
-
-.chcolor {
-  background-color: #ccc;
-  color: black;
-  margin: 5px 0 5px 20px;
-  height: 24px;
-}
-
-.active {
-  background-color: black;
-  color: white;
-}
-
-.colorNumberBox .el-select__wrapper.el-tooltip__trigger {
-  min-height: 22px;
-  width: 90px;
-  margin-top: 5px;
-  background-color: rgb(217, 217, 217);
-  border: 1px solid black
-}
-
-.colorNumberBox .el-select__selected-item.el-select__placeholder span {
-  color: black;
-
-  /* 将文本颜色设置为黑色 */
-}
-
-/* 选择的颜色方案样式 */
-.color-scheme-display {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.color-entry1 {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  /* 设置颜色块之间的间距 */
-}
-
-.color-preview1 {
-  width: 50px;
-  /* 你可以根据需要设置颜色块的宽度 */
-  height: 50px;
-  /* 你可以根据需要设置颜色块的高度 */
-  border: 1px solid #ccc;
-  /* 可选：为颜色块添加边框 */
-  margin-left: 15px;
-}
-
-.color-name1 {
-  margin-left: 10px;
-  /* 设置颜色块和颜色名之间的间距 */
-  font-size: 14px;
 }
 </style>
