@@ -142,7 +142,7 @@ def get_palette():
             pil_image.save(image_path)
 
             # 提取颜色调色板
-            num_colors = 5
+            num_colors = 9
             colors, percents = create_color_palette(image_path, num_colors)
 
             # 寻找最接近的颜色名称

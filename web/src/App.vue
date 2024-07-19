@@ -12,6 +12,7 @@ export default {
 
   data() {
     return {
+      feedbackArray: [],
       msg: "TcpColor",
       box: "container",
       topbox: "title",
@@ -62,7 +63,7 @@ export default {
       feedback2: [],
 
       selected3: [],
-      options3: [{ 'value': '画作', 'label': '画作' }, { 'value': '树枝', 'label': '树枝' }, { 'value': '竹', 'label': '竹' }, { 'value': '印章', 'label': '印章' }, { 'value': '花', 'label': '花' }, { 'value': '月亮', 'label': '月亮' }, { 'value': '山石', 'label': '山石' }, { 'value': '日', 'label': '日' }, { 'value': '车', 'label': '车' }, { 'value': '芦苇', 'label': '芦苇' }, { 'value': '藻', 'label': '藻' }, { 'value': '鸭', 'label': '鸭' }, { 'value': '兰', 'label': '兰' }, { 'value': '伞', 'label': '伞' }, { 'value': '舟船', 'label': '舟船' }, { 'value': '桥', 'label': '桥' }, { 'value': '荷叶', 'label': '荷叶' }, { 'value': '鸳鸯', 'label': '鸳鸯' }, { 'value': '云', 'label': '云' }, { 'value': '篮', 'label': '篮' }, { 'value': '作品屏风', 'label': '作品屏风' }, { 'value': '马', 'label': '马' }, { 'value': '坡', 'label': '坡' }, { 'value': '鸟', 'label': '鸟' }, { 'value': '草', 'label': '草' }, { 'value': '山', 'label': '山' }, { 'value': '船', 'label': '船' }, { 'value': '蔬菜', 'label': '蔬菜' }, { 'value': '月', 'label': '月' }, { 'value': '石', 'label': '石' }, { 'value': '果', 'label': '果' }, { 'value': '荷', 'label': '荷' }, { 'value': '鹅', 'label': '鹅' }, { 'value': '梅', 'label': '梅' }, { 'value': '鱼', 'label': '鱼' }, { 'value': '灵芝', 'label': '灵芝' }, { 'value': '屏风', 'label': '屏风' }, { 'value': '驴', 'label': '驴' }, { 'value': '叶', 'label': '叶' }, { 'value': '树木', 'label': '树木' }, { 'value': '龙', 'label': '龙' }, { 'value': '竹篮', 'label': '竹篮' }, { 'value': '虫', 'label': '虫' }, { 'value': '题跋', 'label': '题跋' }, { 'value': '瀑布', 'label': '瀑布' }, { 'value': '人物', 'label': '人物' }, { 'value': '假山', 'label': '假山' }, { 'value': '马车', 'label': '马车' }, { 'value': '亭台', 'label': '亭台' }, { 'value': '画作屏风', 'label': '画作屏风' }, { 'value': '楼阁', 'label': '楼阁' }, { 'value': '水', 'label': '水' }, { 'value': '菊', 'label': '菊' }, { 'value': '走兽', 'label': '走兽' }, { 'value': '马鞍', 'label': '马鞍' }, { 'value': '车轿', 'label': '车轿' }, { 'value': '鸡', 'label': '鸡' }, { 'value': '松', 'label': '松' }],
+      options3: [{ 'value': '画作', 'label': '画作' }, { 'value': '鸟', 'label': '鸟' }, { 'value': '树枝', 'label': '树枝' }, { 'value': '竹', 'label': '竹' }, { 'value': '印章', 'label': '印章' }, { 'value': '花', 'label': '花' }, { 'value': '月亮', 'label': '月亮' }, { 'value': '山石', 'label': '山石' }, { 'value': '日', 'label': '日' }, { 'value': '车', 'label': '车' }, { 'value': '芦苇', 'label': '芦苇' }, { 'value': '藻', 'label': '藻' }, { 'value': '鸭', 'label': '鸭' }, { 'value': '兰', 'label': '兰' }, { 'value': '伞', 'label': '伞' }, { 'value': '舟船', 'label': '舟船' }, { 'value': '桥', 'label': '桥' }, { 'value': '荷叶', 'label': '荷叶' }, { 'value': '鸳鸯', 'label': '鸳鸯' }, { 'value': '云', 'label': '云' }, { 'value': '篮', 'label': '篮' }, { 'value': '作品屏风', 'label': '作品屏风' }, { 'value': '马', 'label': '马' }, { 'value': '坡', 'label': '坡' }, { 'value': '鸟', 'label': '鸟' }, { 'value': '草', 'label': '草' }, { 'value': '山', 'label': '山' }, { 'value': '船', 'label': '船' }, { 'value': '蔬菜', 'label': '蔬菜' }, { 'value': '月', 'label': '月' }, { 'value': '石', 'label': '石' }, { 'value': '果', 'label': '果' }, { 'value': '荷', 'label': '荷' }, { 'value': '鹅', 'label': '鹅' }, { 'value': '梅', 'label': '梅' }, { 'value': '鱼', 'label': '鱼' }, { 'value': '灵芝', 'label': '灵芝' }, { 'value': '屏风', 'label': '屏风' }, { 'value': '驴', 'label': '驴' }, { 'value': '叶', 'label': '叶' }, { 'value': '树木', 'label': '树木' }, { 'value': '龙', 'label': '龙' }, { 'value': '竹篮', 'label': '竹篮' }, { 'value': '虫', 'label': '虫' }, { 'value': '题跋', 'label': '题跋' }, { 'value': '瀑布', 'label': '瀑布' }, { 'value': '人物', 'label': '人物' }, { 'value': '假山', 'label': '假山' }, { 'value': '马车', 'label': '马车' }, { 'value': '亭台', 'label': '亭台' }, { 'value': '画作屏风', 'label': '画作屏风' }, { 'value': '楼阁', 'label': '楼阁' }, { 'value': '水', 'label': '水' }, { 'value': '菊', 'label': '菊' }, { 'value': '走兽', 'label': '走兽' }, { 'value': '马鞍', 'label': '马鞍' }, { 'value': '车轿', 'label': '车轿' }, { 'value': '鸡', 'label': '鸡' }, { 'value': '松', 'label': '松' }],
       feedback3: [],
 
       selected4: [],
@@ -112,7 +113,8 @@ export default {
       imageBase64s: [],
       palettearray: [],
       testcolorRGB: [],
-      testcolorNAMES : [],
+      testcolorRGB2: [],
+      testcolorNAMES: [],
       currentPaletteIndex: null,
 
       selectColorNumberArray: '',
@@ -125,6 +127,16 @@ export default {
 
       listData: ["原图配色方案", "推荐配色方案"],
       activeIndex: null,
+
+      roomId: null,
+      resultId: null,
+      selectedFile: null,
+      processedImage: null,
+      errorMessage: '', // 新增错误信息状态
+      base64Image: null,
+      base64Content: null,
+
+      showModal: false, // 控制弹窗的显示与隐藏  
     }
   },
 
@@ -187,7 +199,7 @@ export default {
     },
 
     generateImages() {
-
+      //this.prompts = this.feedbackArray;
       this.prompts = [this.feedback1, this.feedback2, this.feedback3, this.feedback4, this.feedback5, '色系', this.inputValue];
     },
     testTiaoseFunction() {
@@ -249,29 +261,31 @@ export default {
       this.currentPaletteIndex = null;
     },//隐藏颜色方案名字
 
-    selectColorNumber() {
-      this.SelectedColorNumber = this.selectColorNumberArray;
+    selectColorNumber(value) {
+      this.SelectedColorNumber = value;
     },
 
     extractColor(paletteIndex) {
-      // 清空 testcolorRGB 和 testcolorNAMES 数组  
+      // 清空 testcolorRGB 和 testcolorNAMES 数组
       this.testcolorRGB = [];
-      this.testcolorNAMES = []; // 清空名字数组以便存储当前方案的所有颜色名  
+      this.testcolorNAMES = [];
 
-      // 获取当前方案的所有颜色值和对应的名字  
+      // 获取当前调色板的颜色值和名称
       const colors = this.colorRGBs[paletteIndex];
-      const colorNames = this.colorNames2[paletteIndex];
+      const colorNames = this.colorNames[paletteIndex];
 
-      // 遍历颜色值，并转换为十六进制字符串，同时存储对应的名字  
-      colors.forEach((color, index) => {
-        const hexColor = '#' + color.toString(16).padStart(6, '0');
+      // 根据 SelectedColorNumber 的值和颜色数组的实际长度确定处理颜色的最大数量
+      const limit = Math.min(this.SelectedColorNumber, colors.length);
+
+      // 迭代颜色，最多迭代到 limit 指定的数量，将颜色转换为十六进制格式，并存储对应的名称
+      for (let i = 0; i < limit; i++) {
+        const hexColor = '#' + colors[i].toString(16).padStart(6, '0');
         this.testcolorRGB.push(hexColor);
-        this.testcolorNAMES.push(colorNames[index]); // 存储对应的颜色名  
-      });
+        this.testcolorNAMES.push(colorNames[i]);
+      }
 
-      // 更新当前选择的方案索引  
+      // 更新当前选中的调色板索引
       this.currentPaletteIndex = paletteIndex;
-      // 可以在这里添加其他逻辑，比如显示一个消息或执行其他操作  
     },
 
     imageButtomFunction() {
@@ -348,15 +362,98 @@ export default {
     },
     sortColors() {
       this.colorRGBs2 = this.sortByContrast(this.colorNames);
-    }
+    },
 
+
+    //图片上传
+    handleFileUpload() {
+      const file = event.target.files[0];
+      if (file) {
+        if (this.validateFileType(file)) { // 添加文件类型验证
+          this.selectedFile = file;
+          const reader = new FileReader();
+          // 定义 FileReader 加载完成后的处理函数  
+          reader.onload = (e) => {
+            this.base64Image = e.target.result;
+            this.base64Content = this.base64Image.replace(/^data:image\/[^;]+;base64,/, "");
+            this.uploadSketch();
+          }; reader.readAsDataURL(file);
+        } else {
+          this.errorMessage = '只支持PNG图片文件上传！';
+        }
+      } else {
+        this.errorMessage = '请选择一个文件！';
+      }
+    },
+    validateFileType(file) { // 文件类型验证函数
+      const allowedTypes = ['image/png'];
+      return allowedTypes.includes(file.type);
+    },
+    //第一个接口，得到roomID
+    uploadSketch() {
+      const formData = new FormData();
+      formData.append('sketch', this.base64Content);
+      axios.post('http://192.168.3.106:8233/upload_sketch', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(response => {
+          this.roomId = response.data.roomId;
+          this.errorMessage = ''; // 清除错误信息
+        })
+        .catch(error => {
+          this.errorMessage = '上传草图失败，请重试！';
+          console.error(error);
+        });
+    },
+    //第二个接口，得到返回ID
+    sendRequestResult() {
+      axios.post('http://192.168.3.106:8233/request_result', {
+        room: this.roomId
+      })
+        .then(response => {
+          this.resultId = response.data.resultId;
+          this.errorMessage = ''; // 清除错误信息
+        })
+        .catch(error => {
+          this.errorMessage = '请求处理结果失败，请检查房间ID和参数！';
+          console.error(error);
+        });
+    },
+    //第三个接口，得到图片base64
+    getProcessedImage() {
+      axios.post('http://127.0.0.1:8233/get_processed_image', { resultId: this.resultId }, {
+        responseType: 'arraybuffer',
+      })
+        .then(response => {
+          const base64String = btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+          this.processedImage = `data:image/png;base64,${base64String}`;
+          this.errorMessage = ''; // 清除错误信息
+        })
+        .catch(error => {
+          this.errorMessage = '获取处理结果图片失败，请重试！';
+          console.error(error);
+        });
+    },
+
+    goToExternalPage() {
+      //window.open('http://127.0.0.1:8233/index.html', '_blank');   //跳转到另一个页面
+      window.open('http://localhost:5173/', '_blank');   
+    },
   },
+
+
+
   watch: {
-    SelectedColorNumber: function (val) {
-      this.SelectedColorNumber = val;
-      this.colorNames2 = this.colorNames.slice(0, this.SelectedColorNumber);
+    SelectedColorNumber(newVal, oldVal) {
+      console.log(newVal, oldVal);
+      for (let i = 0; i < this.colorNames.length; i++) {
+        this.colorNames2[i] = this.colorNames[i].slice(0, newVal);
+      };
     }
   },
+
 
   computed: {
     TextFeedback1() {//选择框1的文本反馈信息
@@ -374,9 +471,23 @@ export default {
     TextFeedback5() {
       return this.feedback5.length > 0 ? this.TextFeedback5 = this.feedback5.join('、') : '';
     },
-  }
+    feedbackStr2() {
+      let feedbackStr = '此图为传统中国画';
+      if (this.TextFeedback1) feedbackStr += `,类型为${this.TextFeedback1}`;
+      if (this.TextFeedback2) feedbackStr += `,意境为${this.TextFeedback2}`;
+      if (this.TextFeedback3) feedbackStr += `,物象为${this.TextFeedback3}`;
+      if (this.TextFeedback4) feedbackStr += `,技法为${this.TextFeedback4}`;
+      if (this.TextFeedback5) feedbackStr += `,赋彩为${this.TextFeedback5}`;
+      //if (this.OneOrFiveColored) feedbackStr += `,色系为${this.OneOrFiveColored}`;
+      return feedbackStr;
+    },
+    feedbackArray() {
+      return [this.feedbackStr2]; // 确保返回一个数组
 
+    }
+  }
 }
+
 </script>
 
 <template>
@@ -433,7 +544,7 @@ export default {
         -->
         <div>
           <!-- 使用组件 -->
-          <my-input v-model="inputValue" id="my-input" type="text" label="" placeholder="输入"></my-input>
+          <my-input v-model="inputValue" id="my-input" type="text" label="" placeholder="输入" style="margin-bottom: 2px;"></my-input>
         </div>
 
         <!--选择框-->
@@ -517,12 +628,12 @@ export default {
             <span v-if="this.TextFeedback3">,物象为{{ TextFeedback3 }}</span>
             <span v-if="this.TextFeedback4">,技法为{{ TextFeedback4 }}</span>
             <span v-if="this.TextFeedback5">,赋彩为{{ TextFeedback5 }}</span>
+            <span v-if="this.OneOrFiveColored">,赋彩为{{ OneOrFiveColored }}</span>
           </p>
           <p v-if="this.inputValue.length > 0">
             用户输入:{{ this.inputValue }}
           </p>
         </div>
-        <br>
         <div class="produce-picture">
           <button @click="imageButtomFunction()"
             style="width: 150px; font-size: 15px ;height: 30px;color: rgb(161, 155, 139);  background-color: rgb(217, 217, 217);border: hidden;cursor: pointer;">
@@ -555,8 +666,7 @@ export default {
               <span
                 style="font-size: 15px; width: 80px; margin-top:4px; margin-right: 2%; margin-left: 5px;">颜色数量：</span>
 
-              <el-select v-model="selectColorNumberArray" placeholder="请选择" fallback-placements="top-start"
-                @change="selectColorNumber(value)"
+              <el-select v-model="selectColorNumberArray" placeholder="请选择" @change="selectColorNumber"
                 style="  align-content: center; width: 80px; height: 20px;margin-right: 6%; ">
                 <el-option v-for="item in colorNumber" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
@@ -574,7 +684,7 @@ export default {
               </button>
 
             </div>
-            <div style="display: flex;  flex-direction: row; flex:10;">
+            <div style="display: flex;  flex-direction: row; flex:10; max-height: 263px;">
               <div class="ChooseColorScheme">
                 <div v-for="(palette, index) in colorNames2" :key="index" class="palette-button"
                   @mouseover="showPaletteNames(index)" @mouseout="hidePaletteNames" @click="extractColor(index)">
@@ -590,8 +700,7 @@ export default {
                 </div>
               </div>
               <div class="TestButton">
-                <button @click="testTiaoseFunction"
-                  style="width: 150px; font-size: 15px ;height: 30px; color: rgb(161, 155, 139); background-color: rgb(217, 217, 217);border: hidden;cursor: pointer;">测试配色方案</button>
+                <button @click="showModal = true" style="height: 25px; margin: 5px auto;">打开弹窗</button>
                 <!--选择的颜色方案-->
                 <div class="color-scheme-display" style="margin: auto;">
                   <div v-for="(color, index) in testcolorRGB" :key="index" class="color-entry1">
@@ -610,6 +719,28 @@ export default {
           <span v-bind:id="texttitle" style="color:#95815c;font-size: 18px;">测试配色方案</span>
         </div>
         <div>
+          <div>
+            <!-- <button @click="goToExternalPage">测试跳转页面</button>-->
+            
+            <div>              
+            <!--   <button @click="showModal = true">测试弹窗</button>-->             
+              <div v-if="showModal" class="modal-overlay">
+                <div class="modal">
+                  <button @click="showModal = false" class="close-btn">&times;</button>
+                  <iframe src="http://127.0.0.1:8233/index.html" frameborder="0" class="modal-iframe"></iframe>
+                </div>
+              </div>
+            </div>
+            
+            <input type="file" @change="handleFileUpload" />
+            <button @click="sendRequestResult" :disabled="!roomId">请求处理结果</button>
+            <button @click="getProcessedImage" :disabled="!resultId">查看处理结果图片</button>
+            <img :src="processedImage" alt="Processed Image" v-if="processedImage">
+            <p>房间ID: {{ roomId }}</p>
+            <p>处理结果ID: {{ resultId }}</p>
+            <p v-if="errorMessage" style="color:red;">错误提示: {{ errorMessage }}</p>
+          </div>
+          <!--显示调色板信息
           <div>上传文件</div>
           <div>{{ this.testcolorRGB }}</div>
           <div>{{ this.SelectedColorNumber }}</div>
@@ -618,6 +749,13 @@ export default {
           <div>{{ this.colorRGBs }}</div>
           <div>{{ this.OneOrFiveColored }}</div>
           <div>{{ this.colorRGBs2 }}</div>
+          <div>{{ this.array }}</div>
+          <div>{{ this.feedbackStr2 }}</div>
+          <div>{{ this.base64Content }}</div>
+          <img :src="base64Image" alt="Uploaded Image">
+          <li v-for="(item, index) in colorNames2" :key="index">
+            {{ index + 1 }}. {{ item }}
+          </li>-->
           <div class="testbox">
             <div class="testpicture" v-for="(image, index) in tiaoseimages" :key="index">
               <div class="tset"><img :src="image" :alt="'image ' + (index + 1)"></div>
@@ -727,7 +865,7 @@ export default {
 .select3,
 .select4,
 .select5 {
-  margin-top: 18px;
+  margin-top: 10px;
 }
 
 /* 更改选择框（输入框）的背景色 */
@@ -845,7 +983,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 .color-selector-show {
@@ -861,7 +999,7 @@ export default {
   /* 为五个颜色选择器容器添加样式 */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   /* 添加间距 */
   margin-right: 57px;
 }
@@ -870,7 +1008,7 @@ export default {
   display: flex;
   align-items: center;
   /* 垂直居中 */
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   /* 可选，为每个颜色块容器添加垂直间距 */
 }
 
@@ -879,7 +1017,7 @@ export default {
   /* 举例，设置颜色块的宽度 */
   height: 50px;
   /* 举例，设置颜色块的高度 */
-  margin-right: 10px;
+  margin-right: 5px;
   /* 为颜色块和颜色名之间添加间距 */
 }
 
@@ -892,11 +1030,11 @@ export default {
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
+  grid-gap: 6px;
   /* 格子之间的间距 */
   justify-content: center;
   margin-top: 4px;
-  margin-bottom: 9px;
+  margin-bottom: 4px;
   margin-left: auto;
   margin-right: auto;
   width: 350px;
@@ -905,8 +1043,6 @@ export default {
 
 /* 色系选择文本 */
 .ColorFeedback-text {
-  padding-top: 5px;
-  padding-bottom: 5px;
   padding-left: 8px;
   padding-right: 8px;
   background-color: #95815c;
@@ -923,16 +1059,18 @@ export default {
   /* 水平居中 */
   text-align: center;
   /* 文本居中 */
+  margin-top: 2px;
+  margin-bottom: 2px;
   margin-left: 10%;
   margin-right: 10%;
+  height: 85px;
 }
 
 /* 生成图片 */
 .produce-picture {
   display: flex;
-  align-items: center;
-  /*垂直居中 */
   justify-content: center;
+  margin-top: 8px;
   /*水平居中 */
 }
 
@@ -952,7 +1090,6 @@ export default {
 
 .test-tiaose {
   display: flex;
-  margin-top: 5px;
   flex-direction: column;
   border: 1px solid black;
   height: 90%;
@@ -989,6 +1126,10 @@ export default {
   border: 1px solid black;
   flex: 2;
   background-color: white;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  /* 允许垂直滚动 */
 }
 
 .ChooseColorScheme {
@@ -999,6 +1140,8 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
+  overflow-y: auto;
+  /* 允许垂直滚动 */
 }
 
 .palette-button {
@@ -1068,6 +1211,7 @@ export default {
 /* 选择的颜色方案样式 */
 .color-scheme-display {
   display: flex;
+  margin:10px auto;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -1075,14 +1219,14 @@ export default {
 .color-entry1 {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   /* 设置颜色块之间的间距 */
 }
 
 .color-preview1 {
-  width: 50px;
+  width: 40px;
   /* 你可以根据需要设置颜色块的宽度 */
-  height: 50px;
+  height: 40px;
   /* 你可以根据需要设置颜色块的高度 */
   border: 1px solid #ccc;
   /* 可选：为颜色块添加边框 */
@@ -1094,4 +1238,43 @@ export default {
   /* 设置颜色块和颜色名之间的间距 */
   font-size: 14px;
 }
+
+
+.modal-overlay {  
+  position: fixed;  
+  top: 0;  
+  left: 0;  
+  width: 100%;  
+  height: 100%;  
+  background-color: rgba(0, 0, 0, 0.5);  
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
+  overflow: auto; /* 允许滚动条出现，如果iframe内容超出视口 */  
+  z-index: 1000;  
+}  
+  
+.modal {  
+  position: relative;  
+  width: 100%; /* 宽度设置为100%，但会被内部iframe的min-width等属性限制 */  
+  height: 100%; /* 高度设置为100%，但同样会受到限制 */  
+  display: flex;  
+  flex-direction: column; /* 垂直布局 */  
+  box-sizing: border-box; /* 包含padding和border在width和height内 */  
+}  
+  
+.close-btn {  
+  position: absolute;  
+  top: 10px;  
+  right: 10px;  
+  cursor: pointer;  
+  z-index: 1001; /* 确保关闭按钮在iframe之上 */  
+}  
+  
+.modal-iframe {  
+  width: 100%;  
+  height: 100%;  
+  border: none;  
+  display: block; /* 移除iframe下方的默认空间 */  
+} 
 </style>
