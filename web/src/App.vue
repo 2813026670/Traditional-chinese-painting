@@ -9,7 +9,6 @@ export default {
 
   },
 
-
   data() {
     return {
       feedbackArray: [],
@@ -130,6 +129,10 @@ export default {
 
       roomId: null,
       resultId: null,
+
+      copyimagesHome: 'D:/BaiduNetdiskDownload/S2P官方配布/style2paints45beta1214B/style2paints45beta1214B/assets/game/rooms/',
+      copyimages: '',
+
       selectedFile: null,
       processedImage: null,
       errorMessage: '', // 新增错误信息状态
@@ -137,6 +140,17 @@ export default {
       base64Content: null,
 
       showModal: false, // 控制弹窗的显示与隐藏  
+      roomimages: [],
+
+      displayedImages: [], // 这里将存放显示的8张图片
+
+      displayedImages1: [],// 这里将存放第1~8张图片
+      displayedImages2: [],
+      displayedImages3: [],
+      displayedImages4: [],
+      displayedImages5: [],
+
+      currentRoom: localStorage.getItem('currentRoom') || '',
     }
   },
 
@@ -218,7 +232,7 @@ export default {
     },
 
     sendPostRequest() {
-      axios.post('http://127.0.0.1:5001/get_palette', {
+      axios.post('/get_palette', {
         prompt: this.prompts
       },
         {
@@ -393,7 +407,7 @@ export default {
     uploadSketch() {
       const formData = new FormData();
       formData.append('sketch', this.base64Content);
-      axios.post('http://192.168.3.106:8233/upload_sketch', formData, {
+      axios.post('http://127.0.0.1:8233/upload_sketch', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -409,7 +423,7 @@ export default {
     },
     //第二个接口，得到返回ID
     sendRequestResult() {
-      axios.post('http://192.168.3.106:8233/request_result', {
+      axios.post('http://127.0.0.1:8233/request_result', {
         room: this.roomId
       })
         .then(response => {
@@ -438,9 +452,93 @@ export default {
     },
 
     goToExternalPage() {
-      //window.open('http://127.0.0.1:8233/index.html', '_blank');   //跳转到另一个页面
-      window.open('http://localhost:5173/', '_blank');   
+      window.open('http://127.0.0.1:8233/index.html', '_blank');   //跳转到另一个页面
+      //window.open('http://localhost:5173/', '_blank');
     },
+
+    fetchImages() {
+      //this.copyimages = `${this.copyimagesHome}${this.resultId}`
+      this.copyimages = `${this.copyimagesHome}${tupian}`
+    },
+
+
+    generateAndShowImage() {
+      this.drawColorGrid(this.$refs.colorCanvas);
+    },
+    drawColorGrid(canvas) {
+      const ctx = canvas.getContext('2d');
+      const colors = this.testcolorRGB;
+      const cellSize = 100;
+      const rows = Math.ceil(colors.length / 3); // 每行最多显示6个色块
+      const cols = Math.min(colors.length, 3);
+
+      for (let i = 0; i < colors.length; i++) {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        const x = col * cellSize;
+        const y = row * cellSize;
+
+        ctx.fillStyle = colors[i];
+        ctx.fillRect(x, y, cellSize, cellSize);
+      }
+    },
+    saveImage() {  
+      const canvas = this.$refs.colorCanvas;  
+      if (canvas.toDataURL) {  
+        // 创建一个链接元素  
+        const link = document.createElement('a');  
+        link.download = 'color-grid.png'; // 指定下载文件名  
+        link.href = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream"); // 使用replace替换MIME类型以确保兼容性  
+        link.click(); // 模拟点击进行下载  
+  
+        // 清理（可选）  
+        // document.body.removeChild(link);  
+      } else {  
+        console.error('Canvas.toDataURL() is not supported.');  
+      }  
+    },  
+
+
+    async fetchAndDisplayImages() {
+      try {
+        const response = await axios.get('/get_latest_images');
+        this.roomimages = response.data.images.map(image => `data:image/png;base64,${image}`);
+        //this.roomimages = response.data.images;
+        console.log(this.roomimages);
+        this.displayedImages1 = this.roomimages.slice(0, 8); // 取前8张图片,为第一组
+        this.displayedImages2 = this.roomimages.slice(8, 16); // 取第9~16图片,为第二组
+        this.displayedImages3 = this.roomimages.slice(16, 24);
+        this.displayedImages4 = this.roomimages.slice(24, 32);
+        this.displayedImages5 = this.roomimages.slice(32, 40);
+        this.displayedImages = this.displayedImages1;
+        console.log(this.displayedImages2);
+      } catch (error) {
+        console.error('Failed to fetch images:', error);
+      }
+    },
+
+    getImageSrc(base64String) {
+      // 确定图像类型，这里假定所有图像都是PNG
+      return `data:image/png;base64,${base64String}`;
+    },
+
+    SetdisplayedImages1() {
+      this.displayedImages = this.displayedImages1;
+    },
+    SetdisplayedImages2() {
+      this.displayedImages = this.displayedImages2;
+      this.$forceUpdate(); 
+    },
+    SetdisplayedImages3() {
+      this.displayedImages = this.displayedImages3;
+    },
+    SetdisplayedImages4() {
+      this.displayedImages = this.displayedImages4;
+    },
+    SetdisplayedImages5() {
+      this.displayedImages = this.displayedImages5;
+    },
+
   },
 
 
@@ -484,7 +582,8 @@ export default {
     feedbackArray() {
       return [this.feedbackStr2]; // 确保返回一个数组
 
-    }
+    },
+
   }
 }
 
@@ -544,7 +643,8 @@ export default {
         -->
         <div>
           <!-- 使用组件 -->
-          <my-input v-model="inputValue" id="my-input" type="text" label="" placeholder="输入" style="margin-bottom: 2px;"></my-input>
+          <my-input v-model="inputValue" id="my-input" type="text" label="" placeholder="输入"
+            style="margin-bottom: 2px;"></my-input>
         </div>
 
         <!--选择框-->
@@ -700,7 +800,12 @@ export default {
                 </div>
               </div>
               <div class="TestButton">
-                <button @click="showModal = true" style="height: 25px; margin: 5px auto;">打开弹窗</button>
+                <div style="  display: flex; justify-content: center;">
+                  <button @click="generateAndShowImage" style="margin: 1px auto;">生成并显示图像</button>
+                  <button @click="saveImage" style="margin: 1px auto;">保存图像</button>  
+                </div>
+                <canvas ref="colorCanvas" width="300" height="300"></canvas>
+                <button @click="goToExternalPage" style="height: 25px; margin: 5px auto;">打开上色功能</button>
                 <!--选择的颜色方案-->
                 <div class="color-scheme-display" style="margin: auto;">
                   <div v-for="(color, index) in testcolorRGB" :key="index" class="color-entry1">
@@ -718,12 +823,12 @@ export default {
           <span style="color:#675229;font-size: 34px;">🅓</span>
           <span v-bind:id="texttitle" style="color:#95815c;font-size: 18px;">测试配色方案</span>
         </div>
-        <div>
-          <div>
-            <!-- <button @click="goToExternalPage">测试跳转页面</button>-->
-            
-            <div>              
-            <!--   <button @click="showModal = true">测试弹窗</button>-->             
+        <div style="  display: flex; flex-direction: column;">
+          <!--<div>
+            <button @click="goToExternalPage">测试跳转页面</button>
+
+            <div>
+              <button @click="showModal = true" style="height: 25px; margin: 5px auto;">打开上色功能</button>
               <div v-if="showModal" class="modal-overlay">
                 <div class="modal">
                   <button @click="showModal = false" class="close-btn">&times;</button>
@@ -731,7 +836,17 @@ export default {
                 </div>
               </div>
             </div>
-            
+
+            <div>
+              <div>
+                <button @click="fetchImages">显示图片</button>
+                <div v-if="copyimages.length > 0">
+                  <img v-for="(imageSrc, index) in copyimages" :key="index" :src="imageSrc" alt="Image">
+                </div>
+                <div v-else>没有图片可显示</div>
+              </div>
+            </div>
+
             <input type="file" @change="handleFileUpload" />
             <button @click="sendRequestResult" :disabled="!roomId">请求处理结果</button>
             <button @click="getProcessedImage" :disabled="!resultId">查看处理结果图片</button>
@@ -739,7 +854,7 @@ export default {
             <p>房间ID: {{ roomId }}</p>
             <p>处理结果ID: {{ resultId }}</p>
             <p v-if="errorMessage" style="color:red;">错误提示: {{ errorMessage }}</p>
-          </div>
+          </div>-->
           <!--显示调色板信息
           <div>上传文件</div>
           <div>{{ this.testcolorRGB }}</div>
@@ -756,6 +871,22 @@ export default {
           <li v-for="(item, index) in colorNames2" :key="index">
             {{ index + 1 }}. {{ item }}
           </li>-->
+          <!--<div>{{ displayedImages2 }}</div>-->
+          <div style="display: flex; margin:2px auto;">
+            <button @click="fetchAndDisplayImages" style="width:95px; height: 25px; margin: 2px;">显示图片</button>
+          </div>
+          <div style="display: flex; margin:2px auto;">
+            <button @click="SetdisplayedImages1" style="width:25px; height: 25px; margin: 2px;">1</button>
+            <button @click="SetdisplayedImages2" style="width:25px; height: 25px; margin: 2px;">2</button>
+            <button @click="SetdisplayedImages3" style="width:25px; height: 25px; margin: 2px;">3</button>
+            <button @click="SetdisplayedImages4" style="width:25px; height: 25px; margin: 2px;">4</button>
+            <button @click="SetdisplayedImages5" style="width:25px; height: 25px; margin: 2px;">5</button>
+          </div>
+          <div style="height: 560px;width: 480px;overflow-y: auto;border: 1px solid #ccc; margin: 0 auto;">
+            <div class="image-container">
+              <img v-for="(image, index) in displayedImages" :key="index" :src="image" alt="Image" class="image">
+            </div>
+          </div>
           <div class="testbox">
             <div class="testpicture" v-for="(image, index) in tiaoseimages" :key="index">
               <div class="tset"><img :src="image" :alt="'image ' + (index + 1)"></div>
@@ -1211,7 +1342,7 @@ export default {
 /* 选择的颜色方案样式 */
 .color-scheme-display {
   display: flex;
-  margin:10px auto;
+  margin: 10px auto;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -1240,41 +1371,74 @@ export default {
 }
 
 
-.modal-overlay {  
-  position: fixed;  
-  top: 0;  
-  left: 0;  
-  width: 100%;  
-  height: 100%;  
-  background-color: rgba(0, 0, 0, 0.5);  
-  display: flex;  
-  justify-content: center;  
-  align-items: center;  
-  overflow: auto; /* 允许滚动条出现，如果iframe内容超出视口 */  
-  z-index: 1000;  
-}  
-  
-.modal {  
-  position: relative;  
-  width: 100%; /* 宽度设置为100%，但会被内部iframe的min-width等属性限制 */  
-  height: 100%; /* 高度设置为100%，但同样会受到限制 */  
-  display: flex;  
-  flex-direction: column; /* 垂直布局 */  
-  box-sizing: border-box; /* 包含padding和border在width和height内 */  
-}  
-  
-.close-btn {  
-  position: absolute;  
-  top: 10px;  
-  right: 10px;  
-  cursor: pointer;  
-  z-index: 1001; /* 确保关闭按钮在iframe之上 */  
-}  
-  
-.modal-iframe {  
-  width: 100%;  
-  height: 100%;  
-  border: none;  
-  display: block; /* 移除iframe下方的默认空间 */  
-} 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  /* 允许滚动条出现，如果iframe内容超出视口 */
+  z-index: 1000;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  /* 宽度设置为100%，但会被内部iframe的min-width等属性限制 */
+  height: 100%;
+  /* 高度设置为100%，但同样会受到限制 */
+  display: flex;
+  flex-direction: column;
+  /* 垂直布局 */
+  box-sizing: border-box;
+  /* 包含padding和border在width和height内 */
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  z-index: 1001;
+  /* 确保关闭按钮在iframe之上 */
+}
+
+.modal-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  /* 移除iframe下方的默认空间 */
+}
+
+
+
+
+.image-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 两列 */
+  gap: 10px;
+  /* 图片之间的间距 */
+}
+
+.image {
+  width: 100%;
+  /* 图片宽度自动调整以适应容器 */
+  height: auto;
+  /* 保持原始宽高比 */
+}
+
+
+canvas {
+  margin-top: 2px;
+  border: 1px solid black;
+}
+
+
 </style>

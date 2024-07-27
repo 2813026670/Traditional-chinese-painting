@@ -20,6 +20,10 @@ from diffusers import StableDiffusionPipeline
 from PIL import Image
 import io
 import torch
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app) 
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
